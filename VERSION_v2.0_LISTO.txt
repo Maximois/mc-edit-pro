@@ -1,0 +1,130 @@
+═══════════════════════════════════════════════════════════════════════════════
+                     INTERFAZ HISTÓRICA DESCARTADA
+                      audio_editor_v2.py
+═══════════════════════════════════════════════════════════════════════════════
+
+Esta interfaz fue descartada por fallas funcionales y de diseño.
+El archivo se conserva como referencia; ya no hay lanzador para abrirlo.
+
+TODAS LAS CARACTERÍSTICAS QUE PEDISTE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎛️  EQ PROFESIONAL 3-BAND (por cada stem)
+    • Bass (100Hz), Mid (1kHz), High (10kHz)
+    • Rango: -120dB a +120dB
+    • Diales giratorios estilo DJ
+    • En VOZ, BAJO, BATERÍA, OTROS
+
+✨ PANEL EFECTOS COMPLETO
+    • Reverb: room size + wet mix
+    • Delay: time (50-500ms) + feedback
+    • Chorus: rate (1-50Hz) + depth
+    • Compressor: threshold + ratio
+    • En CADA STEM individual
+
+📊 ESPECTROGRAMA EN TIEMPO REAL
+    • Visualización FFT interactiva
+    • Historial de 200 frames
+    • Colorización: azul → verde → rojo
+    • Panel separado + interactivo
+
+✏️  TIMELINE EDITABLE
+    • Waveforms de todos los stems
+    • Click y arrastra para seleccionar
+    • Cursor posicional
+    • Zoom ajustable (1-10x)
+
+📈 VU METERS PROFESIONALES
+    • Medidor de nivel por track
+    • Peak hold indicator
+    • Escala dB completa (-60 a 0)
+    • Colores: Verde → Amarillo → Rojo
+
+📊 ANÁLISIS AUTOMÁTICO
+    • BPM detection
+    • Key detection
+    • Indicadores de instrumentos
+
+💾 EXPORTACIÓN MÚLTIPLE
+    • WAV, MP3, FLAC, OGG
+    • Mix completo
+    • Stems individuales
+
+INTERFAZ PROFESIONAL:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[IZQUIERDA]              [CENTRO]            [DERECHA]
+Transport buttons        Timeline ~48"       Analysis
+- Load                   - Waveforms         - BPM
+- Separate              - Zoom               - Key
+- Play                  - Click/drag
+- Record                - Cursor
+
+Mixer Tracks            Spectrogram
+- VU Meter             - FFT real-time
+- Volume -60 to +12dB  - Frequency view
+- Pan L/C/R
+- Solo/Mute
+- EQ Band
+- Effects Panel
+
+QUICK START:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+VAI ABRIR ASÍ:
+
+1. Archivo → music.mp3 (Click "📁 Load")
+   ↓
+2. Backend separa  (Click "🎼 Separate")
+   ↓
+3. Tienes 4 tracks → [Voz] [Bajo] [Batería] [Otros]
+   ↓
+4. Cada track tiene:
+   • Volumen slider
+   • Pan knob
+   • Solo/Mute buttons
+   • EQ 3-band con diales
+   • Panel de efectos (Reverb/Delay/Chorus/Comp)
+   • VU Meter integrado
+   ↓
+5. Timeline te muestra waveforms
+   ↓
+6. Espectrograma en tiempo real
+   ↓
+7. Click "Export Mix" para guardar
+
+INSTALACIÓN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPCIÓN 1 - AUTOMÁTICA:
+    instalar_todo.bat
+    → Selecciona opción 1
+    → Espera a que instale
+    → Se abre automáticamente
+
+OPCIÓN 2 - MANUAL:
+    Elige el archivo Iniciar_*.bat de la interfaz que quieras probar.
+
+REQUISITOS:
+    • Python 3.8+
+    • PyQt6
+    • NumPy
+    • Flask
+    • Librosa
+    • Scikit-learn
+
+    (instalar_todo.bat instala TODO automáticamente)
+
+ARCHIVOS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+audio_editor_v2.py      ← ARCHIVADO: interfaz descartada
+audio_editor_web.py     → Backend Flask (sin cambios)
+app_desktop_window.py   ← Inicio actual de escritorio
+ACTUALIZACIÓN.md        ← Detalles de cambios
+
+¡YA ESTÁ LISTO! 🎉
+
+Doble clic en uno de los archivos Iniciar_*.bat para comenzar.
+
+═══════════════════════════════════════════════════════════════════════════════

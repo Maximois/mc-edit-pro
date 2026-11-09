@@ -1,0 +1,32 @@
+# Python bytecode and local environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.venv*/
+venv/
+env/
+ENV/
+
+# Local audio and generated output
+/test_audio.wav
+**/inputs/
+**/outputs/
+**/ytdl/
+
+# UVR runtimes, downloaded model weights, and source archive
+**/uvr_env/
+**/models/*.onnx
+**/models/*.th
+**/models/*.pt
+**/models/*.pth
+**/models/*.ckpt
+/mc-editor-pro/musia/UVR5-UI-main.zip
+
+# Local caches and operating-system files
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.log
+.DS_Store
+Thumbs.db

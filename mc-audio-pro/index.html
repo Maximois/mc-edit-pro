@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MC Editor de Audio Pro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- TITLEBAR -->
+  <div class="titlebar">
+    <div class="titlebar-left">
+      <div class="logo-icon">MC</div>
+      <div class="title">MC <span>Editor de Audio</span> PRO</div>
+    </div>
+    <div class="status-bar-top">
+      <span class="status-pill sp-gpu" id="gpu-pill">CUDA: Detectando...</span>
+      <span class="status-pill sp-ready" id="status-pill">● LISTO</span>
+    </div>
+    <div class="win-btns">
+      <button class="win-btn wb-close" title="Cerrar"></button>
+      <button class="win-btn wb-min" title="Minimizar"></button>
+      <button class="win-btn wb-max" title="Maximizar"></button>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <button class="tb-btn" onclick="App.openFile()"><span class="tb-icon">📂</span> Abrir</button>
+    <button class="tb-btn" id="btn-save" onclick="App.saveProject()"><span class="tb-icon">💾</span> Guardar</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn active" id="tab-separate" onclick="App.setTab('separate')">Separar Stems</button>
+    <button class="tb-btn" id="tab-denoise" onclick="App.setTab('denoise')">Reducir Ruido</button>
+    <button class="tb-btn" id="tab-effects" onclick="App.setTab('effects')">Efectos</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="App.undo()"><span class="tb-icon">↩</span> Deshacer</button>
+    <button class="tb-btn" onclick="App.showSettings()"><span class="tb-icon">⚙</span> Config</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="App.showAbout()"><span class="tb-icon">ℹ</span> Acerca de</button>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="main">
+
+    <!-- SIDEBAR LEFT -->
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-header">Modelo de IA</div>
+        <div class="model-card selected" onclick="App.selectModel(this,'mdx')" data-model="mdx">
+          <div class="model-name">MDX-Net</div>
+          <div class="model-desc">Separación de alta precisión con redes neuronales espectrales</div>
+          <span class="model-badge mb-mdx">UVR5 MDX</span>
+        </div>
+        <div class="model-card" onclick="App.selectModel(this,'demucs')" data-model="demucs">
+          <div class="model-name">Demucs v4</div>
+          <div class="model-desc">htdemucs_ft — 4 stems en dominio de tiempo</div>
+          <span class="model-badge mb-demucs">Demucs</span>
+        </div>
+        <div class="model-card" onclick="App.selectModel(this,'uvr')" data-model="uvr">
+          <div class="model-name">UVR-MDX-NET</div>
+          <div class="model-desc">Vocal cleaner + eliminación de reverb</div>
+          <span class="model-badge mb-uvr">UVR5</span>
+        </div>
+        <div class="model-card" onclick="App.selectModel(this,'demucs6')" data-model="demucs6">
+          <div class="model-name">Demucs 6-Stem</div>
+          <div class="model-desc">Guitar, piano, bass, drums, vocals, other</div>
+          <span class="model-badge mb-demucs">Demucs</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-header">Parámetros</div>
+        <div class="param-row">
+          <div class="param-label">SEGMENT SIZE</div>
+          <div class="slider-row">
+            <input type="range" min="32" max="512" value="256" id="seg-slider"
+              oninput="document.getElementById('seg-val').textContent=this.value">
+            <span class="slider-val" id="seg-val">256</span>
+          </div>
+        </div>
+        <div class="param-row">
+          <div class="param-label">OVERLAP</div>
+          <div class="slider-row">
+            <input type="range" min="0" max="100" value="25" id="ovl-slider"
+              oninput="document.getElementById('ovl-val').textContent=this.value+'%'">
+            <span class="slider-val" id="ovl-val">25%</span>
+          </div>
+        </div>
+        <div class="param-row">
+          <div class="param-label">BATCH SIZE</div>
+          <div class="slider-row">
+            <input type="range" min="1" max="16" value="4" id="batch-slider"
+              oninput="document.getElementById('batch-val').textContent=this.value">
+            <span class="slider-val" id="batch-val">4</span>
+          </div>
+        </div>
+        <div class="param-row">
+          <div class="param-label">STEM OUTPUT</div>
+          <select class="param-select" id="stem-select">
+            <option>Vocals / Instrumental</option>
+            <option>4 Stems (v/d/b/o)</option>
+            <option>6 Stems completo</option>
+            <option>Solo Vocals</option>
+            <option>Solo Instrumental</option>
+          </select>
+        </div>
+        <div class="param-row">
+          <div class="param-label">FORMATO SALIDA</div>
+          <select class="param-select" id="format-select">
+            <option>WAV 32-bit Float</option>
+            <option>WAV 16-bit PCM</option>
+            <option>FLAC Lossless</option>
+            <option>MP3 320kbps</option>
+            <option>AAC 256kbps</option>
+          </select>
+        </div>
+        <div class="param-row">
+          <div class="param-label">SAMPLE RATE</div>
+          <select class="param-select">
+            <option>44100 Hz (CD)</option>
+            <option>48000 Hz (Video)</option>
+            <option>96000 Hz (Studio)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sidebar-section" style="flex:1">
+        <div class="sidebar-header">Procesado</div>
+        <button class="process-btn" id="proc-btn" onclick="App.startProcess()">▶ PROCESAR</button>
+        <div class="progress-wrap" id="prog-wrap">
+          <div class="progress-label">
+            <span id="prog-stage">En espera...</span>
+            <span id="prog-pct">0%</span>
+          </div>
+          <div class="progress-bg"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+        </div>
+        <div class="log-box" id="log-box">
+          <div class="log-info">[ MC Audio Pro v2.4.1 ]</div>
+          <div class="log-line">Sistema iniciado correctamente.</div>
+          <div class="log-line">GPU: Buscando dispositivos...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER PANEL -->
+    <div class="center">
+      <div class="timeline" id="timeline-bar">
+        <canvas id="timeline-canvas"></canvas>
+        <div class="playhead" id="playhead"></div>
+      </div>
+
+      <div class="waveform-area" id="wave-area">
+        <!-- DROP ZONE -->
+        <div class="drop-overlay" id="drop-overlay">
+          <div class="drop-icon">🎵</div>
+          <div class="drop-text">SOLTAR AUDIO AQUÍ</div>
+          <div class="drop-sub">MP3 · WAV · FLAC · AIFF · OGG</div>
+          <button class="btn-upload" onclick="App.openFile()">Explorar Archivo</button>
+          <input type="file" id="file-input" accept="audio/*" style="display:none" onchange="App.handleFileInput(this)">
+        </div>
+
+        <!-- TRACKS -->
+        <div id="tracks-container" class="tracks-container">
+          <div class="track-row" id="track-0">
+            <div class="track-label tl-main">ORIGINAL</div>
+            <div class="track-wave" id="tw0"><canvas id="wv0"></canvas><div class="track-cursor"></div></div>
+            <div class="track-controls">
+              <button class="track-mute" onclick="App.toggleMute(0)" title="Mute">M</button>
+              <button class="track-solo" onclick="App.toggleSolo(0)" title="Solo">S</button>
+            </div>
+            <div class="track-vol">
+              <input type="range" min="0" max="100" value="80" oninput="App.setVolume(0,this.value)" title="Volumen">
+            </div>
+          </div>
+          <div class="track-row" id="track-1">
+            <div class="track-label tl-vocal">VOCALS</div>
+            <div class="track-wave" id="tw1"><canvas id="wv1"></canvas><div class="track-cursor"></div></div>
+            <div class="track-controls">
+              <button class="track-mute" onclick="App.toggleMute(1)" title="Mute">M</button>
+              <button class="track-solo" onclick="App.toggleSolo(1)" title="Solo">S</button>
+            </div>
+            <div class="track-vol">
+              <input type="range" min="0" max="100" value="75" oninput="App.setVolume(1,this.value)" title="Volumen">
+            </div>
+          </div>
+          <div class="track-row" id="track-2">
+            <div class="track-label tl-bass">BASS</div>
+            <div class="track-wave" id="tw2"><canvas id="wv2"></canvas><div class="track-cursor"></div></div>
+            <div class="track-controls">
+              <button class="track-mute" onclick="App.toggleMute(2)" title="Mute">M</button>
+              <button class="track-solo" onclick="App.toggleSolo(2)" title="Solo">S</button>
+            </div>
+            <div class="track-vol">
+              <input type="range" min="0" max="100" value="70" oninput="App.setVolume(2,this.value)" title="Volumen">
+            </div>
+          </div>
+          <div class="track-row" id="track-3">
+            <div class="track-label tl-drums">DRUMS</div>
+            <div class="track-wave" id="tw3"><canvas id="wv3"></canvas><div class="track-cursor"></div></div>
+            <div class="track-controls">
+              <button class="track-mute" onclick="App.toggleMute(3)" title="Mute">M</button>
+              <button class="track-solo" onclick="App.toggleSolo(3)" title="Solo">S</button>
+            </div>
+            <div class="track-vol">
+              <input type="range" min="0" max="100" value="72" oninput="App.setVolume(3,this.value)" title="Volumen">
+            </div>
+          </div>
+          <div class="track-row" id="track-4">
+            <div class="track-label tl-other">OTHER</div>
+            <div class="track-wave" id="tw4"><canvas id="wv4"></canvas><div class="track-cursor"></div></div>
+            <div class="track-controls">
+              <button class="track-mute" onclick="App.toggleMute(4)" title="Mute">M</button>
+              <button class="track-solo" onclick="App.toggleSolo(4)" title="Solo">S</button>
+            </div>
+            <div class="track-vol">
+              <input type="range" min="0" max="100" value="65" oninput="App.setVolume(4,this.value)" title="Volumen">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRANSPORT -->
+      <div class="transport">
+        <button class="trans-btn" onclick="App.seekTo(0)" title="Al inicio">⏮</button>
+        <button class="trans-btn" onclick="App.seek(-5)" title="Retroceder 5s">⏪</button>
+        <button class="trans-play" id="play-btn" onclick="App.togglePlay()">▶</button>
+        <button class="trans-btn" onclick="App.seek(5)" title="Avanzar 5s">⏩</button>
+        <button class="trans-btn" onclick="App.seekTo(999)" title="Al final">⏭</button>
+        <div class="time-display" id="time-disp">00:00.000</div>
+        <div class="trans-sep"></div>
+        <div class="meters">
+          <div class="level-meter"><span class="meter-label">L</span><div class="meter-bar"><div class="meter-fill mf-l" id="meter-l" style="width:0%"></div></div></div>
+          <div class="level-meter"><span class="meter-label">R</span><div class="meter-bar"><div class="meter-fill mf-r" id="meter-r" style="width:0%"></div></div></div>
+        </div>
+        <div class="trans-sep"></div>
+        <div class="trans-info">
+          <div id="t-sr">SR: — Hz</div>
+          <div id="t-bits">Bits: —</div>
+        </div>
+        <div class="trans-sep"></div>
+        <div class="vol-master">
+          <span class="vol-label">VOL</span>
+          <input type="range" min="0" max="100" value="80" id="master-vol" oninput="App.setMasterVol(this.value)">
+          <span class="vol-val" id="master-vol-val">80</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <div class="rpanel-section">
+        <div class="rpanel-header">Stems detectados</div>
+        <div class="stem-item"><span class="stem-name"><span class="stem-dot" style="background:#7b61ff"></span>Vocals</span><span class="stem-pct" id="sp0">—</span></div>
+        <div class="stem-item"><span class="stem-name"><span class="stem-dot" style="background:#ff6b35"></span>Bass</span><span class="stem-pct" id="sp1">—</span></div>
+        <div class="stem-item"><span class="stem-name"><span class="stem-dot" style="background:#ff3860"></span>Drums</span><span class="stem-pct" id="sp2">—</span></div>
+        <div class="stem-item"><span class="stem-name"><span class="stem-dot" style="background:#00ff88"></span>Other</span><span class="stem-pct" id="sp3">—</span></div>
+        <div class="stem-item"><span class="stem-name"><span class="stem-dot" style="background:#00e5ff"></span>Instrum.</span><span class="stem-pct" id="sp4">—</span></div>
+      </div>
+
+      <div class="rpanel-section">
+        <div class="rpanel-header">Exportar</div>
+        <button class="export-btn" onclick="App.export('all')">⬇ Todos los stems</button>
+        <button class="export-btn secondary" onclick="App.export('vocals')">⬇ Vocals</button>
+        <button class="export-btn secondary" onclick="App.export('inst')">⬇ Instrumental</button>
+        <button class="export-btn secondary" onclick="App.export('drums')">⬇ Drums</button>
+        <button class="export-btn accent" onclick="App.export('project')">💼 Guardar proyecto</button>
+      </div>
+
+      <div class="rpanel-section">
+        <div class="rpanel-header">Información</div>
+        <div class="file-info-box" id="file-info">
+          <div class="fi-row"><span class="fi-k">Archivo</span><span class="fi-v" id="fi-name">—</span></div>
+          <div class="fi-row"><span class="fi-k">Duración</span><span class="fi-v" id="fi-dur">—</span></div>
+          <div class="fi-row"><span class="fi-k">Sample Rate</span><span class="fi-v" id="fi-sr">—</span></div>
+          <div class="fi-row"><span class="fi-k">Bit Depth</span><span class="fi-v" id="fi-bits">—</span></div>
+          <div class="fi-row"><span class="fi-k">Canales</span><span class="fi-v" id="fi-ch">—</span></div>
+          <div class="fi-row"><span class="fi-k">Tamaño</span><span class="fi-v" id="fi-size">—</span></div>
+        </div>
+      </div>
+
+      <div class="rpanel-section">
+        <div class="rpanel-header">Calidad SDR</div>
+        <div class="sdr-panel">
+          <div class="sdr-score" id="sdr-score">—</div>
+          <div class="sdr-label">Signal-to-Distortion Ratio</div>
+          <div class="sdr-bars" id="sdr-bars"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="rpanel-header">Historial</div>
+        <div class="history-list" id="history-list">
+          <div class="hi-empty">Sin acciones</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL SETTINGS -->
+<div class="modal-overlay" id="modal-settings" onclick="App.closeModal('modal-settings')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><span>Configuración</span><button onclick="App.closeModal('modal-settings')">✕</button></div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">Procesado</div>
+        <div class="modal-row">
+          <label>Modo GPU</label>
+          <select class="param-select"><option>CUDA (NVIDIA)</option><option>ROCm (AMD)</option><option>CPU</option></select>
+        </div>
+        <div class="modal-row">
+          <label>Precisión</label>
+          <select class="param-select"><option>FP32</option><option>FP16 (más rápido)</option></select>
+        </div>
+        <div class="modal-row">
+          <label>Directorio salida</label>
+          <input type="text" class="param-input" value="~/MC_Audio_Output" placeholder="Ruta de salida...">
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Interfaz</div>
+        <div class="modal-row">
+          <label>Tema</label>
+          <select class="param-select"><option>Dark Pro</option><option>Midnight Blue</option></select>
+        </div>
+        <div class="modal-row">
+          <label>Idioma</label>
+          <select class="param-select"><option>Español</option><option>English</option><option>Português</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn" onclick="App.closeModal('modal-settings')">Cancelar</button>
+      <button class="modal-btn primary">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ABOUT -->
+<div class="modal-overlay" id="modal-about" onclick="App.closeModal('modal-about')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><span>Acerca de MC Audio Pro</span><button onclick="App.closeModal('modal-about')">✕</button></div>
+    <div class="modal-body" style="text-align:center;padding:24px">
+      <div class="logo-icon" style="width:56px;height:56px;font-size:22px;border-radius:12px;margin:0 auto 16px">MC</div>
+      <div style="font-size:22px;font-weight:700;color:var(--accent);letter-spacing:3px;margin-bottom:4px">MC EDITOR DE AUDIO PRO</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Versión 2.4.1 — Build 2024</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;text-align:left;background:var(--bg3);padding:16px;border-radius:8px;border:1px solid var(--border)">
+        <b style="color:var(--text)">Modelos integrados:</b><br>
+        • UVR5 MDX-Net — Separación espectral<br>
+        • Demucs v4 (htdemucs_ft) — Waveform domain<br>
+        • UVR-MDX-NET — Vocal isolation<br>
+        • Demucs 6-Stem — Separación completa<br><br>
+        <b style="color:var(--text)">Tecnologías:</b><br>
+        • PyTorch · CUDA · TorchAudio<br>
+        • Web Audio API · Canvas 2D<br>
+        • HTML5 · CSS3 · JavaScript ES6+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn primary" onclick="App.closeModal('modal-about')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+MC EDITOR PRO - INICIO RAPIDO
+=============================
+
+Elige una interfaz:
+  Iniciar_Tkinter.bat
+  Iniciar_PyQt_Pro.bat
+  Iniciar_PyQt_Desktop.bat
+  Iniciar_PyQt_Desktop_v2.bat
+  Iniciar_Web_PyQt.bat
+  Iniciar_WebView.bat
+
+Cada lanzador abre la implementacion correspondiente. Todos usan Python
+3.11 y preparan el entorno local .venv311 automáticamente.
+
+Las interfaces que usan la API inician el backend local. Si el puerto 5000
+está ocupado por un programa ajeno, se mostrará un error sin cerrar ese
+programa.

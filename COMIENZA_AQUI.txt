@@ -1,0 +1,21 @@
+MC EDITOR PRO - ELIGE UNA INTERFAZ
+==================================
+
+Lanzador predeterminado:
+  Iniciar.bat -> mc-editor-pro en una ventana de escritorio PyQt6
+
+Alternativas (se conservan todas):
+
+- Iniciar_Tkinter.bat          -> editor Tkinter
+- Iniciar_PyQt_Pro.bat         -> editor PyQt Pro
+- Iniciar_PyQt_Desktop.bat     -> interfaz PyQt Desktop
+- Iniciar_PyQt_Desktop_v2.bat  -> interfaz PyQt Desktop v2
+- Iniciar_Web_PyQt.bat         -> interfaz mc-editor-pro en ventana PyQt
+- Iniciar_WebView.bat          -> interfaz mc-editor-pro en ventana pywebview
+
+No necesitas abrir Chrome ni Edge por separado. Las ventanas WebView muestran
+la interfaz dentro de la aplicacion de escritorio.
+
+Todos los lanzadores usan Python 3.11. En el primer inicio preparan el
+entorno local .venv311 y las dependencias. El entorno .venv antiguo se deja
+intacto, aunque apunta a una instalacion de Python 3.14 que no está presente.

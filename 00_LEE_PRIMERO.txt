@@ -1,0 +1,24 @@
+MC EDITOR PRO - LEER PRIMERO
+============================
+
+Iniciar.bat abre por defecto mc-editor-pro en una ventana PyQt6 WebEngine,
+la interfaz que identificaste como la que querías usar. También puedes
+abrirla directamente con Iniciar_Web_PyQt.bat.
+
+Los demás lanzadores e interfaces se conservan:
+
+Iniciar_Tkinter.bat          -> audio_editor_full.py (Tkinter)
+Iniciar_PyQt_Pro.bat         -> audio_editor_pro.py
+Iniciar_PyQt_Desktop.bat     -> audio_editor_desktop.py
+Iniciar_PyQt_Desktop_v2.bat  -> audio_editor_desktop_v2.py
+Iniciar_Web_PyQt.bat         -> mc-editor-pro en ventana PyQt6
+Iniciar_WebView.bat          -> mc-editor-pro en ventana pywebview
+
+Todos usan Python 3.11 y el entorno local .venv311. El primer inicio crea
+ese entorno y comprueba/instala las dependencias necesarias.
+
+El antiguo .venv se conserva sin modificar: apuntaba a C:\Python314, una
+ruta que no existe en este equipo.
+
+Si una interfaz no abre, conserva la consola y comparte el error mostrado.
+Los lanzadores que usan el backend lo inician y lo cierran junto con la UI.
